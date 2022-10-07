@@ -1,20 +1,19 @@
 # Copy seed corpus and dictionary.
 mv $SRC/{*.zip,*.dict} $OUT
 
-MAVEN_ARGS="-Dmaven.test.skip=true -Djavac.src.version=15 -Djavac.target.version=15"
-$MVN package org.apache.maven.plugins:maven-shade-plugin:3.2.4:shade $MAVEN_ARGS
-CURRENT_VERSION=$($MVN org.apache.maven.plugins:maven-help-plugin:3.2.0:evaluate \
+mvn package -Dmaven.test.skip=true -Djdk.version=15
+CURRENT_VERSION=$(mvn org.apache.maven.plugins:maven-help-plugin:3.2.0:evaluate \
  -Dexpression=project.version -q -DforceStdout)
 cp "target/json-flattener-$CURRENT_VERSION.jar" $OUT/json-flattener.jar
 
-ALL_JARS="json-flattener.jar"
+PROJECT_JARS="json-flattener.jar"
 
 # The classpath at build-time includes the project jars in $OUT as well as the
 # Jazzer API.
-BUILD_CLASSPATH=$(echo $ALL_JARS | xargs printf -- "$OUT/%s:"):$JAZZER_API_PATH
+BUILD_CLASSPATH=$(echo $PROJECT_JARS | xargs printf -- "$OUT/%s:"):$JAZZER_API_PATH
 
 # All .jar and .class files lie in the same directory as the fuzzer at runtime.
-RUNTIME_CLASSPATH=$(echo $ALL_JARS | xargs printf -- "\$this_dir/%s:"):\$this_dir
+RUNTIME_CLASSPATH=$(echo $PROJECT_JARS | xargs printf -- "\$this_dir/%s:"):\$this_dir
 
 for fuzzer in $(find $SRC -name '*Fuzzer.java'); do
   fuzzer_basename=$(basename -s .java $fuzzer)
@@ -31,5 +30,5 @@ LD_LIBRARY_PATH=\"$JVM_LD_LIBRARY_PATH\":\$this_dir \
 --target_class=$fuzzer_basename \
 --jvm_args=\"-Xmx2048m\" \
 \$@" > $OUT/$fuzzer_basename
-  chmod u+x $OUT/$fuzzer_basename
+  chmod +x $OUT/$fuzzer_basename
 done
