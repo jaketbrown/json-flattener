@@ -1,7 +1,7 @@
 project: JsonFlattener
 target: JsonFlattenerFuzzer
 cmds:
-- cmd: /out/jazzer_driver --agent_path=/out/jazzer_agent_deploy.jar --cp=/out/json-flattener.jar::/out/json-base-2.0.0.jar::/out --target_class=JsonFlattenerFuzzer --jvm_args="-Xmx2048m"
+- cmd: /out/jazzer_driver --agent_path=/out/jazzer_agent_deploy.jar --cp=/out/json-flattener.jar::/root/.m2/repository/com/github/wnameless/json/json-base/2.0.0/json-base-2.0.0.jar::/out --target_class=JsonFlattenerFuzzer --jvm_args="-Xmx2048m"
   env:
     LD_LIBRARY_PATH: '"/usr/lib/jvm/java-15-openjdk-amd64/lib/server":/out'
   timeout: 50
