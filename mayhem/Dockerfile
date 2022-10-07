@@ -7,9 +7,10 @@ RUN git clone --depth 1 https://github.com/dvyukov/go-fuzz-corpus && zip -q $SRC
 
 COPY . json-flattener
 RUN rm -rf json-flattener/mayhem
-WORKDIR json-flattener
+
 COPY mayhem/build.sh $SRC/
 COPY mayhem/*.java $SRC/
+WORKDIR  $SRC/json-flattener
 
 ENV FUZZING_LANGUAGE=jvm SANITIZER=address FUZZING_ENGINE=libfuzzer
 RUN compile
