@@ -1,4 +1,4 @@
-package jsonflattenerfuzzer;
+#package jsonflattenerfuzzer;
 
 import java.util.*;  
 
