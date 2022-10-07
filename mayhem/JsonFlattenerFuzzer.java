@@ -3,7 +3,7 @@ package jsonflattenerfuzzer;
 import java.util.*;  
 
 import com.github.wnameless.json.flattener.*;
-import com.github.wnameless.json.flattener.JsonFlattener;
+import com.github.wnameless.json.base.*;
 
 import com.code_intelligence.jazzer.api.FuzzedDataProvider;
 
