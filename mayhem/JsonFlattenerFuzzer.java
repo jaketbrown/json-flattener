@@ -2,7 +2,10 @@ package jsonflattenerfuzzer;
 
 import com.code_intelligence.jazzer.api.FuzzedDataProvider;
 
-import json.flattener;
+
+import com.github.wnameless.json.flattener.*;
+
+import com.github.wnameless.json.flattener.JsonFlattener;
 
 public class JsonFlattenerFuzzer {
 
