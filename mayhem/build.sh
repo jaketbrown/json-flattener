@@ -6,9 +6,7 @@ CURRENT_VERSION=$(mvn org.apache.maven.plugins:maven-help-plugin:3.2.0:evaluate 
  -Dexpression=project.version -q -DforceStdout)
 cp "target/json-flattener-$CURRENT_VERSION.jar" $OUT/json-flattener.jar
 
-find / -name "*json*"
-
-PROJECT_JARS="json-flattener.jar:/.m2/repository/com/github/wnameless/json/json-base/2.0.0/json-base-2.0.0.jar:~/.m2/repository/com/github/wnameless/json/json-base/2.0.0/json-base-2.0.0.jar"
+PROJECT_JARS="json-flattener.jar:/root/.m2/repository/com/github/wnameless/json/json-base/2.0.0/json-base-2.0.0.jar"
 
 # The classpath at build-time includes the project jars in $OUT as well as the
 # Jazzer API.
