@@ -2,6 +2,8 @@ package jsonflattenerfuzzer;
 
 import com.code_intelligence.jazzer.api.FuzzedDataProvider;
 
+import com.github.wnameless.json.flattener;
+
 public class JsonFlattenerFuzzer {
 
   public static void fuzzerTestOneInput(FuzzedDataProvider data) {
