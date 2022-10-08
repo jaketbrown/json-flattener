@@ -1,7 +1,7 @@
 import com.code_intelligence.jazzer.api.FuzzedDataProvider;
 
 import java.util.*;
-//import java.lang.NumberFormatException;
+import java.lang.NumberFormatException;
 
 import com.github.wnameless.json.flattener.*;
 import com.github.wnameless.json.base.*;
@@ -26,7 +26,7 @@ public class JsonFlattenerFuzzer {
 
 			String input = data.consumeRemainingAsString();
 			try {
-				ObjectMapper mapper = new ObjectMapper();
+			ObjectMapper mapper = new ObjectMapper();
 			JacksonJsonValue parsedJacksonJsonValue =  new JacksonJsonValue(mapper.readTree(input));
 			
 			String nestedJson = JsonUnflattener.unflatten(input);		
@@ -38,9 +38,9 @@ public class JsonFlattenerFuzzer {
 			} catch (JsonProcessingException ignored) {
 				
 			}
-//			catch (NumberFormatException ignored) {
-//				
-//			}
+			catch (NumberFormatException e) {
+				throw new RuntimeException(e.getMessage());
+			}
 
 		
 	}
