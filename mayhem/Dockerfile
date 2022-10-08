@@ -16,4 +16,4 @@ WORKDIR  $SRC/json-flattener
 
 ENV FUZZING_LANGUAGE=jvm SANITIZER=address FUZZING_ENGINE=libfuzzer
 RUN compile
-#RUN chmod +x /out/jazzer_driver
+RUN chmod +x /out/jazzer_driver
