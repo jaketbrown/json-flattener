@@ -37,9 +37,8 @@ public class JsonFlattenerFuzzer {
 			
 			} catch (JsonProcessingException ignored) {
 				
-			}
-			catch (NumberFormatException e) {
-				throw new RuntimeException(e.getMessage());
+			} catch (NumberFormatException e) {
+				
 			}
 
 		
