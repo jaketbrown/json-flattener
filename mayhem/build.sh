@@ -8,14 +8,7 @@ cp "target/json-flattener-$CURRENT_VERSION.jar" $OUT/json-flattener.jar
 
 #cp /root/.m2/repository/com/github/wnameless/json/json-base/2.0.0/json-base-2.0.0.jar $OUT/json-base-2.0.0.jar
 
-PROJECT_JARS="json-flattener.jar:
-/root/.m2/repository/com/github/wnameless/json/json-base/2.0.0/json-base-2.0.0.jar:
-/root/.m2/repository/com/github/wnameless/json/json-base/2.0.0/json-base-2.0.0.jar:
-/root/.m2/repository/org/apache/commons/commons-text/1.9/commons-text-1.9.jar:
-/root/.m2/repository/org/apache/commons/commons-lang3/3.11/commons-lang3-3.11.jar:
-/root/.m2/repository/com/fasterxml/jackson/core/jackson-core/2.3.1/jackson-core-2.3.1.jar:
-/root/.m2/repository/com/fasterxml/jackson/core/jackson-databind/2.3.1/jackson-databind-2.3.1.jar:
-/root/.m2/repository/com/fasterxml/jackson/core/jackson-annotations/2.3.1/jackson-annotations-2.3.1.jar"
+PROJECT_JARS="json-flattener.jar:/root/.m2/repository/com/github/wnameless/json/json-base/2.0.0/json-base-2.0.0.jar:/root/.m2/repository/org/apache/commons/commons-text/1.9/commons-text-1.9.jar:/root/.m2/repository/org/apache/commons/commons-lang3/3.11/commons-lang3-3.11.jar:/root/.m2/repository/com/fasterxml/jackson/core/jackson-core/2.3.1/jackson-core-2.3.1.jar:/root/.m2/repository/com/fasterxml/jackson/core/jackson-databind/2.3.1/jackson-databind-2.3.1.jar:/root/.m2/repository/com/fasterxml/jackson/core/jackson-annotations/2.3.1/jackson-annotations-2.3.1.jar"
 
 # The classpath at build-time includes the project jars in $OUT as well as the
 # Jazzer API.
