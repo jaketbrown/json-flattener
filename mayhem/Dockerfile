@@ -1,9 +1,11 @@
 FROM gcr.io/oss-fuzz-base/base-builder-jvm
-RUN apt-get update && apt-get install -y maven
+RUN curl -L https://downloads.apache.org/maven/maven-3/3.6.3/binaries/apache-maven-3.6.3-bin.zip -o maven.zip && unzip maven.zip -d $SRC/maven && rm -rf maven.zip
 
-RUN git clone --depth 1 https://github.com/google/fuzzing && cat fuzzing/dictionaries/json.dict > $SRC/JsonFuzzer.dict
+ENV MVN $SRC/maven/apache-maven-3.6.3/bin/mvn
 
-RUN git clone --depth 1 https://github.com/dvyukov/go-fuzz-corpus && zip -q $SRC/JsonFuzzer_seed_corpus.zip go-fuzz-corpus/json/corpus/*
+RUN git clone --depth 1 https://github.com/google/fuzzing && mv fuzzing/dictionaries/xml.dict $SRC/JsonFlattenerFuzzer.dict && rm -rf fuzzing
+
+RUN git clone --depth 1 https://github.com/dvyukov/go-fuzz-corpus && zip -j $SRC/JsonFlattenerFuzzer_seed_corpus.zip go-fuzz-corpus/xml/corpus/* && rm -rf go-fuzz-corpus
 
 COPY . json-flattener
 RUN rm -rf json-flattener/mayhem
@@ -14,4 +16,4 @@ WORKDIR  $SRC/json-flattener
 
 ENV FUZZING_LANGUAGE=jvm SANITIZER=address FUZZING_ENGINE=libfuzzer
 RUN compile
-RUN chmod +x /out/jazzer_driver
+#RUN chmod +x /out/jazzer_driver

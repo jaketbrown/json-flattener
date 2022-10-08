@@ -1,21 +1,37 @@
-# Copy seed corpus and dictionary.
+#!/bin/bash -eu
+# Copyright 2022 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+################################################################################
+
+# Move seed corpus and dictionary.
 mv $SRC/{*.zip,*.dict} $OUT
 
-mvn package -Dmaven.test.skip=true -Djdk.version=15
-CURRENT_VERSION=$(mvn org.apache.maven.plugins:maven-help-plugin:3.2.0:evaluate \
+MAVEN_ARGS="-Djavac.src.version=15 -Djavac.target.version=15 -DskipTests"
+$MVN package org.apache.maven.plugins:maven-shade-plugin:3.2.4:shade $MAVEN_ARGS
+CURRENT_VERSION=$($MVN org.apache.maven.plugins:maven-help-plugin:3.2.0:evaluate \
  -Dexpression=project.version -q -DforceStdout)
 cp "target/json-flattener-$CURRENT_VERSION.jar" $OUT/json-flattener.jar
 
-#cp /root/.m2/repository/com/github/wnameless/json/json-base/2.0.0/json-base-2.0.0.jar $OUT/json-base-2.0.0.jar
-
-PROJECT_JARS="json-flattener.jar:/root/.m2/repository/com/github/wnameless/json/json-base/2.0.0/json-base-2.0.0.jar:/root/.m2/repository/org/apache/commons/commons-text/1.9/commons-text-1.9.jar:/root/.m2/repository/org/apache/commons/commons-lang3/3.11/commons-lang3-3.11.jar:/root/.m2/repository/com/fasterxml/jackson/core/jackson-core/2.3.1/jackson-core-2.3.1.jar:/root/.m2/repository/com/fasterxml/jackson/core/jackson-databind/2.3.1/jackson-databind-2.3.1.jar:/root/.m2/repository/com/fasterxml/jackson/core/jackson-annotations/2.3.1/jackson-annotations-2.3.1.jar"
+ALL_JARS="json-flattener.jar"
 
 # The classpath at build-time includes the project jars in $OUT as well as the
-# Jazzer API.
-BUILD_CLASSPATH=$(echo $PROJECT_JARS | xargs printf -- "$OUT/%s:"):$JAZZER_API_PATH
+# Jazzer API. 
+BUILD_CLASSPATH=$(echo $ALL_JARS | xargs printf -- "$OUT/%s:"):$JAZZER_API_PATH
 
 # All .jar and .class files lie in the same directory as the fuzzer at runtime.
-RUNTIME_CLASSPATH=$(echo $PROJECT_JARS | xargs printf -- "\$this_dir/%s:"):\$this_dir
+RUNTIME_CLASSPATH=$(echo $ALL_JARS | xargs printf -- "\$this_dir/%s:"):\$this_dir
 
 for fuzzer in $(find $SRC -name '*Fuzzer.java'); do
   fuzzer_basename=$(basename -s .java $fuzzer)
@@ -32,8 +48,5 @@ LD_LIBRARY_PATH=\"$JVM_LD_LIBRARY_PATH\":\$this_dir \
 --target_class=$fuzzer_basename \
 --jvm_args=\"-Xmx2048m\" \
 \$@" > $OUT/$fuzzer_basename
-  chmod +x $OUT/$fuzzer_basename
+  chmod u+x $OUT/$fuzzer_basename
 done
-
-
-cat $OUT/$fuzzer_basename
