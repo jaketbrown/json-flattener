@@ -3,9 +3,9 @@ RUN curl -L https://downloads.apache.org/maven/maven-3/3.6.3/binaries/apache-mav
 
 ENV MVN $SRC/maven/apache-maven-3.6.3/bin/mvn
 
-RUN git clone --depth 1 https://github.com/google/fuzzing && mv fuzzing/dictionaries/xml.dict $SRC/JsonFlattenerFuzzer.dict && rm -rf fuzzing
+RUN git clone --depth 1 https://github.com/google/fuzzing && mv fuzzing/dictionaries/json.dict $SRC/JsonFlattenerFuzzer.dict && rm -rf fuzzing
 
-RUN git clone --depth 1 https://github.com/dvyukov/go-fuzz-corpus && zip -j $SRC/JsonFlattenerFuzzer_seed_corpus.zip go-fuzz-corpus/xml/corpus/* && rm -rf go-fuzz-corpus
+RUN git clone --depth 1 https://github.com/dvyukov/go-fuzz-corpus && zip -j $SRC/JsonFlattenerFuzzer_seed_corpus.zip go-fuzz-corpus/json/corpus/* && rm -rf go-fuzz-corpus
 
 COPY . json-flattener
 RUN rm -rf json-flattener/mayhem
