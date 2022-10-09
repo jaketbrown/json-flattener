@@ -16,7 +16,6 @@
 ################################################################################
 
 # Move seed corpus and dictionary.
-mv $SRC/{*.zip,*.dict} $OUT
 
 MAVEN_ARGS="-Djavac.src.version=15 -Djavac.target.version=15 -DskipTests"
 $MVN package org.apache.maven.plugins:maven-shade-plugin:3.2.4:shade $MAVEN_ARGS
