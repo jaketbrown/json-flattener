@@ -1,7 +1,7 @@
 project: JsonFlattenerFuzzer
 target: JsonFlattenerFuzzer
 testsuite:
-  - file://src/testsuite
+  - file:///src/testsuite
 
 cmds:
 - cmd: /out/jazzer_driver --agent_path=/out/jazzer_agent_deploy.jar --cp=/out/json-flattener.jar::/out --target_class=JsonFlattenerFuzzer --jvm_args="-Xmx2048m"
