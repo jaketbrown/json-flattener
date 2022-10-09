@@ -9,6 +9,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 
 import com.github.wnameless.json.unflattener.*;
 import java.io.IOException;
+
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 
@@ -24,16 +26,16 @@ public class JsonFlattenerFuzzer {
 
 	public static void fuzzerTestOneInput(FuzzedDataProvider data) throws IOException {
 
-			String input = data.consumeRemainingAsBytes();
 			try {
 			ObjectMapper mapper = new ObjectMapper();
-			JacksonJsonValue parsedJacksonJsonValue =  new JacksonJsonValue(mapper.readTree(input));
+			JsonNode node = mapper.readTree(data.consumeRemainingAsBytes());
+			JacksonJsonValue parsedJacksonJsonValue =  new JacksonJsonValue(node);
 			
-			String nestedJson = JsonUnflattener.unflatten(input);		
+			String nestedJson = JsonUnflattener.unflatten(node.asText());		
 			
-			Map<String, Object> flattenedJson = new JsonFlattener(input).flattenAsMap();
+			Map<String, Object> flattenedJson = new JsonFlattener(node.asText()).flattenAsMap();
 
-			String jsonStr = JsonFlattener.flatten(input);
+			String jsonStr = JsonFlattener.flatten(node.asText());
 			
 			} catch (JsonProcessingException ignored) {
 				
