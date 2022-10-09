@@ -6,9 +6,10 @@ ENV MVN $SRC/maven/apache-maven-3.6.3/bin/mvn
 COPY . json-flattener
 RUN rm -rf json-flattener/mayhem
 
-COPY mayhem/testsuite $SRC/
+COPY mayhem/testsuite $SRC/testsuite
 COPY mayhem/build.sh $SRC/
 COPY mayhem/*.java $SRC/
+
 WORKDIR  $SRC/json-flattener
 
 ENV FUZZING_LANGUAGE=jvm SANITIZER=address FUZZING_ENGINE=libfuzzer
