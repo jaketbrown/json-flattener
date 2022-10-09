@@ -24,7 +24,7 @@ public class JsonFlattenerFuzzer {
 
 	public static void fuzzerTestOneInput(FuzzedDataProvider data) throws IOException {
 
-			String input = data.consumeRemainingAsString();
+			String input = data.consumeRemainingAsBytes();
 			try {
 			ObjectMapper mapper = new ObjectMapper();
 			JacksonJsonValue parsedJacksonJsonValue =  new JacksonJsonValue(mapper.readTree(input));
