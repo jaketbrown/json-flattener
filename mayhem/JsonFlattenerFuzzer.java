@@ -1,6 +1,7 @@
 import com.code_intelligence.jazzer.api.FuzzedDataProvider;
 
 import java.util.*;
+import java.io.StringReader;
 import java.io.IOException;
 
 import com.github.wnameless.json.flattener.*;
@@ -17,8 +18,17 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public class JsonFlattenerFuzzer {
 
 	public static void fuzzerTestOneInput(FuzzedDataProvider data) {
+		try {
 		String input = data.consumeRemainingAsString();
-		Map<String, Object> flattenJson = JsonFlattener.flattenAsMap(input);
-
+		JsonFlattener jf;
+		JsonUnflattener ju;
+		StringReader strReader = new StringReader(input); 
+		
+		
+		jf = new JsonFlattener(strReader);
+		ju = new JsonUnflattener(strReader);
+		} catch (IOException ignored) {
+			
+		}
 	}
 }
