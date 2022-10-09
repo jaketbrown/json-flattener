@@ -1,8 +1,8 @@
 project: PROJECT
-target: JsonJavaFuzzer
+target: JsonFlattenerFuzzer
 testsuite:
   - https://mayhem.forallsecure.com/jaketbrown/json-flattener/jsonflattenerfuzzer/testsuite.tar
-  - file:///src/simple.json
+  - file://src/simple.json
 cmds:
 - cmd: /out/jazzer_driver --agent_path=/out/jazzer_agent_deploy.jar --cp=/out/json-flattener.jar::/out --target_class=JsonFlattenerFuzzer --jvm_args="-Xmx2048m"
   env:
