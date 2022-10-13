@@ -1,15 +1,24 @@
 
 import com.code_intelligence.jazzer.api.FuzzedDataProvider;
-
+import com.github.wnameless.json.flattener.*;
+import com.github.wnameless.json.unflattener.*;
+import java.io.StringReader;
 import java.io.IOException;
 
 public class JsonFlattenerFuzzer {
 
 	public static void fuzzerTestOneInput(FuzzedDataProvider data) {
+		String input = data.consumeRemainingAsString();
 		try {
-  		String input = data.consumeRemainingAsString();
-  		JsonFlattener.flatten(input);
+		JsonFlattener jf;
+		JsonUnflattener ju;
+		StringReader strReader = new StringReader(input); 
 
-		} catch (IOException ignored) {}
+
+		jf = new JsonFlattener(strReader);
+		ju = new JsonUnflattener(strReader);
+		} catch (IOException ignored) {
+
+		}
 	}
 }
