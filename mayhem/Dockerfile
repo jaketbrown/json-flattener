@@ -1,4 +1,4 @@
-FROM gcr.io/oss-fuzz-base/base-builder-jvm
+FROM gcr.io/oss-fuzz-base/base-builder-jvm as builder
 RUN curl -L https://downloads.apache.org/maven/maven-3/3.6.3/binaries/apache-maven-3.6.3-bin.zip -o maven.zip && unzip maven.zip -d $SRC/maven && rm -rf maven.zip
 
 ENV MVN $SRC/maven/apache-maven-3.6.3/bin/mvn
@@ -15,3 +15,6 @@ WORKDIR  $SRC/json-flattener
 ENV FUZZING_LANGUAGE=jvm SANITIZER=address FUZZING_ENGINE=libfuzzer
 RUN compile
 RUN chmod +x /out/jazzer_driver
+
+FROM maven:latest 
+COPY --from=builder /out/jazzer_driver /
