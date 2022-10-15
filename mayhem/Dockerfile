@@ -17,4 +17,5 @@ RUN compile
 RUN chmod +x /out/jazzer_driver
 
 FROM maven:latest 
-COPY --from=builder /out/jazzer_driver /
+COPY --from=builder /out/* /
+CMD /jazzer_driver 
