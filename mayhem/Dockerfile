@@ -6,7 +6,7 @@ COPY . json-flattener
 WORKDIR /json-flattener
 
 # Build json-flattener
-RUN mvn compile
+RUN mvn package
 RUN mv target/json-flattener-0.14.1-SNAPSHOT.jar /json-flattener.jar
 
 # Download dependencies
