@@ -1,5 +1,5 @@
 project: JsonFlattenerFuzzer
 target: JsonFlattenerFuzzer
 cmds:
-- cmd: /jazzer_driver --agent_path=/jazzer_agent_deploy.jar --cp=/json-flattener.jar::/ --target_class=JsonFlattenerFuzzer --jvm_args="-Xmx2048m"
+- cmd: /usr/bin/jazzer_driver --agent_path=/jazzer_agent_deploy.jar --cp=/JsonFlattenerFuzzer.jar:/json-flattener.jar:/json-base.jar:/commons-text.jar:/commons-lang.jar:/jackson-core.jar:/jackson-databind.jar:/jackson-annotations.jar --target_class=JsonFlattenerFuzzer
   libfuzzer: true
