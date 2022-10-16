@@ -1,6 +1,3 @@
-
-//import com.github.wnameless.json.flattener.*;
-//import com.github.wnameless.json.unflattener.*;
 import java.io.StringReader;
 import java.io.IOException;
 
@@ -15,22 +12,18 @@ public class JsonFlattenerFuzzer {
 
 	public static void fuzzerTestOneInput(FuzzedDataProvider data) {
 		String input = data.consumeRemainingAsString();
-		ObjectMapper mapper = new ObjectMapper();
+
+		// validate the input, must be correct json
 		try {
+			ObjectMapper mapper = new ObjectMapper();
 			mapper.readTree(input);
-		} catch (JacksonException e) {
+		} catch (IOException e) {
 			return;
 		}
-		
-		System.out.println("====\n" + input);
-//		try {
-			//StringReader strReader = new StringReader(input);
 
-			JsonFlattener.flatten(input);
-			JsonUnflattener.unflatten(input);
-//		} catch (Json ignored) {
-//
-//		}
+
+		JsonFlattener.flatten(input);
+		JsonUnflattener.unflatten(input);
 
 	}
 }
