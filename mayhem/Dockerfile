@@ -27,14 +27,16 @@ RUN mv jackson-databind.jar /
 RUN curl -L https://search.maven.org/remotecontent?filepath=com/fasterxml/jackson/core/jackson-annotations/2.14.0-rc2/jackson-annotations-2.14.0-rc2.jar -o jackson-annotations.jar
 RUN mv jackson-annotations.jar /
 
+RUN curl -L https://search.maven.org/remotecontent?filepath=com/code-intelligence/jazzer-api/0.12.0/jazzer-api-0.12.0.jar -o jazzer-api.jar
+RUN mv jazzer-api.jar /
 
 # Build the java class
 RUN mkdir -p mayhem/build && \
-	javac -cp /json-base.jar:/json-flattener.jar mayhem/JsonFlattenerFuzzer.java -d mayhem/build  && \
+	javac -cp /json-base.jar:/json-flattener.jar:/jazzer-api.jar:/jackson-core.jar:/jackson-databind.jar mayhem/JsonFlattenerFuzzer.java -d mayhem/build  && \
 	cd mayhem/build && \
 	jar cvf JsonFlattenerFuzzer.jar * && \
     mv JsonFlattenerFuzzer.jar /JsonFlattenerFuzzer.jar
     
 # Set to fuzz!
-ENTRYPOINT []
-CMD [ "/usr/bin/jazzer_driver", "--cp=/JsonFlattenerFuzzer.jar:/json-base.jar:/json-flattener.jar:/commons-text.jar:/commons-lang.jar:/jackson-core.jar:/jackson-databind.jar:/jackson-annotations.jar", "--target_class=JsonFlattenerFuzzer" ]
+#ENTRYPOINT []
+#CMD [ "/usr/bin/jazzer_driver", "--agent_path=/usr/bin/jazzer_agent_deploy.jar", "--cp=/JsonFlattenerFuzzer.jar:/json-base.jar:/json-flattener.jar:/commons-text.jar:/commons-lang.jar:/jackson-core.jar:/jackson-databind.jar:/jackson-annotations.jar:/jazzer-api.jar", "--target_class=JsonFlattenerFuzzer" ]
