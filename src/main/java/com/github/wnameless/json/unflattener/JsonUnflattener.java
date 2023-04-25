@@ -2,16 +2,14 @@
  *
  * Copyright 2015 Wei-Ming Wu
  *
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not
- * use this file except in compliance with the License. You may obtain a copy of
- * the License at
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
+ * in compliance with the License. You may obtain a copy of the License at
  *
  * http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
- * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
- * License for the specific language governing permissions and limitations under
+ * Unless required by applicable law or agreed to in writing, software distributed under the License
+ * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
+ * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  *
  */
@@ -20,15 +18,14 @@ package com.github.wnameless.json.unflattener;
 import static com.github.wnameless.json.flattener.FlattenMode.MONGODB;
 import static org.apache.commons.lang3.Validate.isTrue;
 import static org.apache.commons.lang3.Validate.notNull;
-
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringWriter;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 import com.github.wnameless.json.base.JacksonJsonCore;
 import com.github.wnameless.json.base.JsonArrayCore;
 import com.github.wnameless.json.base.JsonCore;
@@ -43,28 +40,31 @@ import com.github.wnameless.json.flattener.PrintMode;
 
 /**
  * 
- * {@link JsonUnflattener} provides a static {@link #unflatten(String)} method
- * to unflatten any flattened JSON string back to nested one.
- *
+ * {@link JsonUnflattener} provides a static {@link #unflatten(String)} method to unflatten any
+ * flattened JSON string back to nested one.
+ * 
  * @author Wei-Ming Wu
  * 
  */
 public final class JsonUnflattener {
 
   /**
-   * {@link ROOT} is the default key of the Map returned by
-   * {@link #unflattenAsMap}. When {@link JsonUnflattener} processes a JSON
-   * string which is not a JSON object or array, the final outcome may not suit
-   * in a Java Map. At that moment, {@link JsonUnflattener} will put the result
+   * {@link ROOT} is the default key of the Map returned by {@link #unflattenAsMap}. When
+   * {@link JsonUnflattener} processes a JSON string which is not a JSON object or array, the final
+   * outcome may not suit in a Java Map. At that moment, {@link JsonUnflattener} will put the result
    * in the Map with {@link ROOT} as its key.
    */
   public static final String ROOT = "root";
 
+  private static final Pattern naturalNumberPattern = Pattern.compile("\\d+");
+  private static final Pattern illegalSeparatorPattern = Pattern.compile("[\"\\s]");
+
+  private final Map<String, Pattern> patternCache = new HashMap<>();
+
   /**
    * Returns a JSON string of nested objects by the given flattened JSON string.
    * 
-   * @param json
-   *          a flattened JSON string
+   * @param json a flattened JSON string
    * @return a JSON string of nested objects
    */
   public static String unflatten(String json) {
@@ -74,8 +74,7 @@ public final class JsonUnflattener {
   /**
    * Returns a JSON string of nested objects by the given flattened Map.
    * 
-   * @param flattenedMap
-   *          a flattened Map
+   * @param flattenedMap a flattened Map
    * @return a JSON string of nested objects
    */
   public static String unflatten(Map<String, ?> flattenedMap) {
@@ -85,8 +84,7 @@ public final class JsonUnflattener {
   /**
    * Returns a Java Map of nested objects by the given flattened JSON string.
    * 
-   * @param json
-   *          a flattened JSON string
+   * @param json a flattened JSON string
    * @return a Java Map of nested objects
    */
   public static Map<String, Object> unflattenAsMap(String json) {
@@ -96,12 +94,10 @@ public final class JsonUnflattener {
   /**
    * Returns a Java Map of nested objects by the given flattened Map.
    * 
-   * @param flattenedMap
-   *          a flattened Map
+   * @param flattenedMap a flattened Map
    * @return a Java Map of nested objects
    */
-  public static Map<String, Object> unflattenAsMap(
-      Map<String, ?> flattenedMap) {
+  public static Map<String, Object> unflattenAsMap(Map<String, ?> flattenedMap) {
     return new JsonUnflattener(flattenedMap).unflattenAsMap();
   }
 
@@ -121,7 +117,7 @@ public final class JsonUnflattener {
     ju.withSeparator(separator);
     ju.withLeftAndRightBrackets(leftBracket, rightBracket);
     ju.withPrintMode(printMode);
-    if (keyTrans != null) ju.withKeyTransformer(keyTrans);
+    ju.withKeyTransformer(keyTrans);
     return ju;
   }
 
@@ -137,8 +133,7 @@ public final class JsonUnflattener {
   /**
    * Creates a JSON unflattener by given JSON string.
    * 
-   * @param json
-   *          a JSON string
+   * @param json a JSON string
    */
   public JsonUnflattener(String json) {
     jsonCore = new JacksonJsonCore();
@@ -148,10 +143,8 @@ public final class JsonUnflattener {
   /**
    * Creates a JSON unflattener by given {@link JsonCore} and JSON string.
    * 
-   * @param jsonCore
-   *          a {@link JsonCore}
-   * @param json
-   *          a JSON string
+   * @param jsonCore a {@link JsonCore}
+   * @param json a JSON string
    */
   public JsonUnflattener(JsonCore<?> jsonCore, String json) {
     this.jsonCore = notNull(jsonCore);
@@ -161,10 +154,8 @@ public final class JsonUnflattener {
   /**
    * Creates a JSON unflattener by given JSON string reader.
    * 
-   * @param jsonReader
-   *          a JSON reader
-   * @throws IOException
-   *           if the jsonReader cannot be read
+   * @param jsonReader a JSON reader
+   * @throws IOException if the jsonReader cannot be read
    */
   public JsonUnflattener(Reader jsonReader) throws IOException {
     jsonCore = new JacksonJsonCore();
@@ -172,18 +163,13 @@ public final class JsonUnflattener {
   }
 
   /**
-   * Creates a JSON unflattener by given {@link JsonCore} and JSON string
-   * reader.
+   * Creates a JSON unflattener by given {@link JsonCore} and JSON string reader.
    * 
-   * @param jsonCore
-   *          a {@link JsonCore}
-   * @param jsonReader
-   *          a JSON reader
-   * @throws IOException
-   *           if the jsonReader cannot be read
+   * @param jsonCore a {@link JsonCore}
+   * @param jsonReader a JSON reader
+   * @throws IOException if the jsonReader cannot be read
    */
-  public JsonUnflattener(JsonCore<?> jsonCore, Reader jsonReader)
-      throws IOException {
+  public JsonUnflattener(JsonCore<?> jsonCore, Reader jsonReader) throws IOException {
     this.jsonCore = notNull(jsonCore);
     root = jsonCore.parse(jsonReader);
   }
@@ -191,8 +177,7 @@ public final class JsonUnflattener {
   /**
    * Creates a JSON unflattener by given flattened {@link Map}.
    * 
-   * @param flattenedMap
-   *          a flattened {@link Map}
+   * @param flattenedMap a flattened {@link Map}
    */
   public JsonUnflattener(Map<String, ?> flattenedMap) {
     jsonCore = new JacksonJsonCore();
@@ -200,48 +185,64 @@ public final class JsonUnflattener {
   }
 
   /**
-   * Creates a JSON unflattener by given {@link JsonCore} and flattened
-   * {@link Map}.
+   * Creates a JSON unflattener by given {@link JsonCore} and flattened {@link Map}.
    * 
-   * @param jsonCore
-   *          a {@link JsonCore}
-   * @param flattenedMap
-   *          a flattened {@link Map}
+   * @param jsonCore a {@link JsonCore}
+   * @param flattenedMap a flattened {@link Map}
    */
   public JsonUnflattener(JsonCore<?> jsonCore, Map<String, ?> flattenedMap) {
     this.jsonCore = notNull(jsonCore);
     root = jsonCore.parse(new JsonifyLinkedHashMap<>(flattenedMap).toString());
   }
 
-  private String arrayIndex() {
-    return Pattern.quote(leftBracket.toString()) + "\\s*\\d+\\s*"
+  private Pattern arrayIndexPattern() {
+    String regex = Pattern.quote(leftBracket.toString()) + "\\s*\\d+\\s*"
         + Pattern.quote(rightBracket.toString());
+    if (!patternCache.containsKey(regex)) {
+      patternCache.put(regex, Pattern.compile(regex));
+    }
+    return patternCache.get(regex);
   }
 
-  private String objectComplexKey() {
-    return Pattern.quote(leftBracket.toString()) + "\\s*\".+?\"\\s*"
+  private Pattern objectComplexKeyPattern() {
+    String regex = Pattern.quote(leftBracket.toString()) + "\\s*\".+?\"\\s*"
         + Pattern.quote(rightBracket.toString());
+    if (!patternCache.containsKey(regex)) {
+      patternCache.put(regex, Pattern.compile(regex));
+    }
+    return patternCache.get(regex);
   }
 
-  private String objectKey() {
-    return "[^" + Pattern.quote(separator.toString())
-        + Pattern.quote(leftBracket.toString())
-        + Pattern.quote(rightBracket.toString()) + "]+";
+  private Pattern objectKeyPattern() {
+    String regex = "[^" + Pattern.quote(separator.toString())
+        + Pattern.quote(leftBracket.toString()) + Pattern.quote(rightBracket.toString()) + "]+";
+    if (!patternCache.containsKey(regex)) {
+      patternCache.put(regex, Pattern.compile(regex));
+    }
+    return patternCache.get(regex);
   }
 
   private Pattern keyPartPattern() {
-    if (flattenMode.equals(MONGODB))
-      return Pattern.compile("[^" + Pattern.quote(separator.toString()) + "]+");
-    else
-      return Pattern
-          .compile(arrayIndex() + "|" + objectComplexKey() + "|" + objectKey());
+    if (flattenMode.equals(MONGODB)) {
+      String regex = "[^" + Pattern.quote(separator.toString()) + "]+";
+      if (!patternCache.containsKey(regex)) {
+        patternCache.put(regex, Pattern.compile(regex));
+      }
+      return patternCache.get(regex);
+    } else {
+      String regex = arrayIndexPattern().pattern() + "|" + objectComplexKeyPattern().pattern() + "|"
+          + objectKeyPattern().pattern();
+      if (!patternCache.containsKey(regex)) {
+        patternCache.put(regex, Pattern.compile(regex));
+      }
+      return patternCache.get(regex);
+    }
   }
 
   /**
    * A fluent setter to setup a mode of the {@link JsonUnflattener}.
    * 
-   * @param flattenMode
-   *          a {@link FlattenMode}
+   * @param flattenMode a {@link FlattenMode}
    * @return this {@link JsonUnflattener}
    */
   public JsonUnflattener withFlattenMode(FlattenMode flattenMode) {
@@ -250,60 +251,57 @@ public final class JsonUnflattener {
   }
 
   /**
-   * A fluent setter to setup the separator within a key in the flattened JSON.
-   * The default separator is a dot(.).
+   * A fluent setter to setup the separator within a key in the flattened JSON. The default
+   * separator is a dot(.).
    * 
-   * @param separator
-   *          any character
+   * @param separator any character
    * @return this {@link JsonUnflattener}
    */
   public JsonUnflattener withSeparator(char separator) {
     String separatorStr = String.valueOf(separator);
-    isTrue(!separatorStr.matches("[\"\\s]"),
+    isTrue(!illegalSeparatorPattern.matcher(separatorStr).matches(),
         "Separator contains illegal character(%s)", separatorStr);
     isTrue(!leftBracket.equals(separator) && !rightBracket.equals(separator),
         "Separator(%s) is already used in brackets", separatorStr);
 
+    patternCache.clear();
     this.separator = separator;
     return this;
   }
 
-  private String illegalBracketsRegex() {
-    return "[\"\\s" + Pattern.quote(separator.toString()) + "]";
+  private Pattern illegalBracketsPattern() {
+    return Pattern.compile("[\"\\s" + Pattern.quote(separator.toString()) + "]");
   }
 
   /**
-   * A fluent setter to setup the left and right brackets within a key in the
-   * flattened JSON. The default left and right brackets are left square
-   * bracket([) and right square bracket(]).
+   * A fluent setter to setup the left and right brackets within a key in the flattened JSON. The
+   * default left and right brackets are left square bracket([) and right square bracket(]).
    * 
-   * @param leftBracket
-   *          any character
-   * @param rightBracket
-   *          any character
+   * @param leftBracket any character
+   * @param rightBracket any character
    * @return this {@link JsonUnflattener}
    */
-  public JsonUnflattener withLeftAndRightBrackets(char leftBracket,
-      char rightBracket) {
+  public JsonUnflattener withLeftAndRightBrackets(char leftBracket, char rightBracket) {
     isTrue(leftBracket != rightBracket, "Both brackets cannot be the same");
     String leftBracketStr = String.valueOf(leftBracket);
     String rightBracketStr = String.valueOf(rightBracket);
-    isTrue(!leftBracketStr.matches(illegalBracketsRegex()),
+    Pattern illegalBracketsPattern = illegalBracketsPattern();
+    isTrue(!illegalBracketsPattern.matcher(leftBracketStr).matches(),
         "Left bracket contains illegal character(%s)", leftBracketStr);
-    isTrue(!rightBracketStr.matches(illegalBracketsRegex()),
+    isTrue(!illegalBracketsPattern.matcher(rightBracketStr).matches(),
         "Right bracket contains illegal character(%s)", rightBracketStr);
 
+    patternCache.clear();
     this.leftBracket = leftBracket;
     this.rightBracket = rightBracket;
     return this;
   }
 
   /**
-   * A fluent setter to setup a print mode of the {@link JsonUnflattener}. The
-   * default print mode is minimal.
+   * A fluent setter to setup a print mode of the {@link JsonUnflattener}. The default print mode is
+   * minimal.
    * 
-   * @param printMode
-   *          a {@link PrintMode}
+   * @param printMode a {@link PrintMode}
    * @return this {@link JsonUnflattener}
    */
   public JsonUnflattener withPrintMode(PrintMode printMode) {
@@ -312,15 +310,13 @@ public final class JsonUnflattener {
   }
 
   /**
-   * A fluent setter to setup a {@link KeyTransformer} of the
-   * {@link JsonUnflattener}.
+   * A fluent setter to setup a {@link KeyTransformer} of the {@link JsonUnflattener}.
    * 
-   * @param keyTrans
-   *          a {@link KeyTransformer}
+   * @param keyTrans a {@link KeyTransformer}
    * @return this {@link JsonUnflattener}
    */
   public JsonUnflattener withKeyTransformer(KeyTransformer keyTrans) {
-    this.keyTrans = notNull(keyTrans);
+    this.keyTrans = keyTrans;
     return this;
   }
 
@@ -350,8 +346,7 @@ public final class JsonUnflattener {
     }
 
     JsonObjectCore<?> flattened = root.asObject();
-    JsonValueCore<?> unflattened =
-        flattened.isEmpty() ? jsonCore.parse("{}").asValue() : null;
+    JsonValueCore<?> unflattened = flattened.isEmpty() ? jsonCore.parse("{}").asValue() : null;
 
     Iterator<String> names = flattened.names();
     while (names.hasNext()) {
@@ -366,16 +361,14 @@ public final class JsonUnflattener {
 
         if (objKey != null ^ aryIdx != null) {
           if (isJsonArray(keyPart)) {
-            currentVal =
-                findOrCreateJsonArray(currentVal, objKey, aryIdx).asValue();
+            currentVal = findOrCreateJsonArray(currentVal, objKey, aryIdx).asValue();
             objKey = null;
             aryIdx = extractIndex(keyPart);
           } else { // JSON object
             if (flattened.get(key).isArray()) { // KEEP_ARRAYS mode
               flattened.set(key, unflattenArray(flattened.get(key).asArray()));
             }
-            currentVal =
-                findOrCreateJsonObject(currentVal, objKey, aryIdx).asValue();
+            currentVal = findOrCreateJsonObject(currentVal, objKey, aryIdx).asValue();
             objKey = extractKey(keyPart);
             aryIdx = null;
           }
@@ -436,11 +429,9 @@ public final class JsonUnflattener {
   }
 
   private String extractKey(String keyPart) {
-    if (keyPart.matches(objectComplexKey())) {
-      keyPart = keyPart.replaceAll(
-          "^" + Pattern.quote(leftBracket.toString()) + "\\s*\"", "");
-      keyPart = keyPart.replaceAll(
-          "\"\\s*" + Pattern.quote(rightBracket.toString()) + "$", "");
+    if (objectComplexKeyPattern().matcher(keyPart).matches()) {
+      keyPart = keyPart.replaceAll("^" + Pattern.quote(leftBracket.toString()) + "\\s*\"", "");
+      keyPart = keyPart.replaceAll("\"\\s*" + Pattern.quote(rightBracket.toString()) + "$", "");
     }
     return keyTrans != null ? keyTrans.transform(keyPart) : keyPart;
   }
@@ -449,18 +440,17 @@ public final class JsonUnflattener {
     if (flattenMode.equals(MONGODB))
       return Integer.valueOf(keyPart);
     else
-      return Integer.valueOf(
-          keyPart.replaceAll("[" + Pattern.quote(leftBracket.toString())
-              + Pattern.quote(rightBracket.toString()) + "\\s]", ""));
+      return Integer.valueOf(keyPart.replaceAll("[" + Pattern.quote(leftBracket.toString())
+          + Pattern.quote(rightBracket.toString()) + "\\s]", ""));
   }
 
   private boolean isJsonArray(String keyPart) {
-    return keyPart.matches(arrayIndex())
-        || (flattenMode.equals(MONGODB) && keyPart.matches("\\d+"));
+    return arrayIndexPattern().matcher(keyPart).matches()
+        || (flattenMode.equals(MONGODB) && naturalNumberPattern.matcher(keyPart).matches());
   }
 
-  private JsonArrayCore<?> findOrCreateJsonArray(JsonValueCore<?> currentVal,
-      String objKey, Integer aryIdx) {
+  private JsonArrayCore<?> findOrCreateJsonArray(JsonValueCore<?> currentVal, String objKey,
+      Integer aryIdx) {
     if (objKey != null) {
       JsonObjectCore<?> jsonObj = currentVal.asObject();
 
@@ -487,8 +477,8 @@ public final class JsonUnflattener {
     }
   }
 
-  private JsonObjectCore<?> findOrCreateJsonObject(JsonValueCore<?> currentVal,
-      String objKey, Integer aryIdx) {
+  private JsonObjectCore<?> findOrCreateJsonObject(JsonValueCore<?> currentVal, String objKey,
+      Integer aryIdx) {
     if (objKey != null) {
       JsonObjectCore<?> jsonObj = currentVal.asObject();
 
