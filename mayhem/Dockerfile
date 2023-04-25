@@ -7,7 +7,7 @@ WORKDIR /json-flattener
 
 # Build json-flattener
 RUN mvn package
-RUN mv target/json-flattener-0.14.1-SNAPSHOT.jar /json-flattener.jar
+RUN mv target/json-flattener-0.16.5-SNAPSHOT.jar /json-flattener.jar
 
 # Download dependencies
 RUN curl -L https://search.maven.org/remotecontent?filepath=com/github/wnameless/json/json-base/2.0.0/json-base-2.0.0.jar -o json-base-2.0.0.jar
