@@ -1,7 +1,11 @@
 project: JsonFlattenerFuzzer
 target: JsonFlattenerFuzzer
+
+testsuite:
+- file://mayhem/testsuite
+
 cmds:
-- cmd: /usr/bin/jazzer_driver --agent_path=/usr/bin/jazzer_agent_deploy.jar --cp=/JsonFlattenerFuzzer.jar:/json-flattener.jar:/json-base.jar:/commons-text.jar:/commons-lang.jar:/jackson-core.jar:/jackson-databind.jar:/jackson-annotations.jar:/jazzer-api.jar --target_class=JsonFlattenerFuzzer --jvm_args="-Xmx2048m" /json-flattener/mayhem/testsuite/
+- cmd: /usr/bin/jazzer_driver --agent_path=/usr/bin/jazzer_agent_deploy.jar --cp=/JsonFlattenerFuzzer.jar:/json-flattener.jar:/json-base.jar:/commons-text.jar:/commons-lang.jar:/jackson-core.jar:/jackson-databind.jar:/jackson-annotations.jar:/jazzer-api.jar --target_class=JsonFlattenerFuzzer --jvm_args="-Xmx2048m" 
   env:
     LD_LIBRARY_PATH: '"/usr/local/openjdk-11/lib/server":/'
   libfuzzer: true
