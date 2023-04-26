@@ -12,6 +12,11 @@ public class JsonFlattenerFuzzer {
 
 	public static void fuzzerTestOneInput(FuzzedDataProvider data) {
 		String input = data.consumeRemainingAsString();
+		try {
+		Map<String, Object> flattenJson = JsonFlattener.flattenAsMap(input);
+		}
+		catch (JSONException | IOException ignored) {
+		}
 // 		// validate the input, must be correct json
 // 		try {
 // // 			ObjectMapper mapper = new ObjectMapper();
