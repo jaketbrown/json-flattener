@@ -15,7 +15,7 @@ public class JsonFlattenerFuzzer {
 		try {
 		Map<String, Object> flattenJson = JsonFlattener.flattenAsMap(input);
 		}
-		catch (JSONException | IOException ignored) {
+		catch (IOException ignored) {
 		}
 // 		// validate the input, must be correct json
 // 		try {
