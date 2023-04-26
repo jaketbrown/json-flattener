@@ -1,6 +1,6 @@
 project: JsonFlattenerFuzzer
 target: JsonFlattenerFuzzer
-
+dictionary: /json-flattener/mayhem/json.dict
 testsuite:
 - file://mayhem/testsuite
 
